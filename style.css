@@ -106,6 +106,7 @@ button {
   align-items: center;
   animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 20;
+  width: 100%;
 }
 
 .message-text {
@@ -116,11 +117,28 @@ button {
   font-family: 'Lobster', cursive;
 }
 
-.gif-container img {
-  max-width: 300px;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  pointer-events: none;
+/* Styles for the Slideshow */
+.slideshow-container {
+  position: relative;
+  width: 300px;
+  height: 400px; /* Adjusted height for portrait photos */
+  margin: 0 auto;
+}
+
+.slide-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Keeps the whole image visible */
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+}
+
+.slide-img.active {
+  opacity: 1;
 }
 
 .heart {
@@ -160,5 +178,5 @@ button {
   h1 { font-size: 2.2rem; }
   button { padding: 12px 30px; font-size: 1rem; }
   .message-text { font-size: 1.5rem; padding: 0 15px; }
-  .gif-container img { max-width: 80%; }
+  .slideshow-container { width: 80%; height: 350px; }
 }

@@ -11,31 +11,30 @@ const successMessage = document.getElementById("successMessage");
 let hasMoved = false;
 let heartInterval;
 let textIndex = 0;
+let slideshowInterval; // Variable to control the slideshow
 
 const noTexts = [
-  "Είσαι σίγουρη;",
-  "Ξανασκέψου το...",
-  "Μήπως κάνεις λάθος;",
-  "Έλα τώρα...",
-  "Μην είσαι τέτοια!",
-  "Τελευταία ευκαιρία!",
-  "Σε παρακαλώ...",
-  "Μου ραγίζεις την καρδιά 💔",
-
-
-  "Θα βάλω τα κλάματα! 😭",
-  "Δεν το δέχομαι!",
-  "Αποκλείεται!",
-  "ΠΑΤΑ ΤΟ ΝΑΙ ΛΕΜΕ! ❤️"
+  "Είσαι σίγουρη;", 
+  "Ξανασκέψου το...", 
+  "Μήπως κάνεις λάθος;", 
+  "Έλα τώρα...", 
+  "Μην είσαι τέτοια!", 
+  "Σε παρακαλώ...", 
+  "Μου ραγίζεις την καρδιά 💔", 
+  "Θα βάλω τα κλάματα! 😭", 
+  "Δεν το δέχομαι!", 
+  "Τελευταία ευκαιρία!", 
+  "Αποκλείεται!", 
+  "ΠΑΤΑ ΤΟ ΝΑΙ ΛΕΜΕ! ❤️" 
 ];
 
 function moveButton() {
   noBtn.innerText = noTexts[textIndex];
-  
   textIndex++;
 
   if (textIndex >= noTexts.length) {
-    textIndex = noTexts.length - 4; 
+      // Loop the last 4 messages
+      textIndex = noTexts.length - 4; 
   }
 
   const windowWidth = window.innerWidth;
@@ -51,24 +50,24 @@ function moveButton() {
   const randomTop = Math.max(20, Math.floor(Math.random() * maxTop));
 
   if (!hasMoved) {
-    const initialLeft = btnRect.left;
-    const initialTop = btnRect.top;
+      const initialLeft = btnRect.left;
+      const initialTop = btnRect.top;
 
-    noBtn.style.left = initialLeft + "px";
-    noBtn.style.top = initialTop + "px";
-    noBtn.style.position = "fixed";
-    
-    hasMoved = true;
+      noBtn.style.left = initialLeft + "px";
+      noBtn.style.top = initialTop + "px";
+      noBtn.style.position = "fixed";
+      
+      hasMoved = true;
 
-    setTimeout(() => {
-      noBtn.classList.add("smooth-move");
-      noBtn.style.left = randomLeft + "px";
-      noBtn.style.top = randomTop + "px";
-    }, 10);
+      setTimeout(() => {
+          noBtn.classList.add("smooth-move");
+          noBtn.style.left = randomLeft + "px";
+          noBtn.style.top = randomTop + "px";
+      }, 10);
 
   } else {
-    noBtn.style.left = randomLeft + "px";
-    noBtn.style.top = randomTop + "px";
+      noBtn.style.left = randomLeft + "px";
+      noBtn.style.top = randomTop + "px";
   }
 }
 
@@ -79,10 +78,31 @@ noBtn.addEventListener("touchstart", (e) => {
 });
 noBtn.addEventListener("click", moveButton);
 
+// Function to cycle images
+function startSlideshow() {
+  const slides = document.querySelectorAll('.slide-img');
+  let slideIndex = 0;
+
+  // Clear any existing interval to prevent speed-ups
+  if (slideshowInterval) clearInterval(slideshowInterval);
+
+  slideshowInterval = setInterval(() => {
+      // Remove active class from current
+      slides[slideIndex].classList.remove('active');
+      
+      // Calculate next index
+      slideIndex = (slideIndex + 1) % slides.length;
+      
+      // Add active class to next
+      slides[slideIndex].classList.add('active');
+  }, 2500); // Change image every 2.5 seconds
+}
+
 yesBtn.addEventListener("click", () => {
   mainContainer.style.display = "none";
   successMessage.style.display = "flex";
   heartInterval = setInterval(createHeart, 300);
+  startSlideshow(); // Start photo animation
 });
 
 backBtn.addEventListener("click", () => {
@@ -90,8 +110,8 @@ backBtn.addEventListener("click", () => {
   mainContainer.style.display = "block";
   
   clearInterval(heartInterval);
+  clearInterval(slideshowInterval); // Stop photo animation
   
-  // Reset state completely
   hasMoved = false;
   textIndex = 0;
   noBtn.innerText = "Όχι 😢"; 

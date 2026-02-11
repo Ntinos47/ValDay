@@ -10,8 +10,34 @@ const successMessage = document.getElementById("successMessage");
 
 let hasMoved = false;
 let heartInterval;
+let textIndex = 0;
+
+const noTexts = [
+  "Είσαι σίγουρη;",
+  "Ξανασκέψου το...",
+  "Μήπως κάνεις λάθος;",
+  "Έλα τώρα...",
+  "Μην είσαι τέτοια!",
+  "Τελευταία ευκαιρία!",
+  "Σε παρακαλώ...",
+  "Μου ραγίζεις την καρδιά 💔",
+
+
+  "Θα βάλω τα κλάματα! 😭",
+  "Δεν το δέχομαι!",
+  "Αποκλείεται!",
+  "ΠΑΤΑ ΤΟ ΝΑΙ ΛΕΜΕ! ❤️"
+];
 
 function moveButton() {
+  noBtn.innerText = noTexts[textIndex];
+  
+  textIndex++;
+
+  if (textIndex >= noTexts.length) {
+    textIndex = noTexts.length - 4; 
+  }
+
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
   const btnRect = noBtn.getBoundingClientRect();
@@ -65,7 +91,10 @@ backBtn.addEventListener("click", () => {
   
   clearInterval(heartInterval);
   
+  // Reset state completely
   hasMoved = false;
+  textIndex = 0;
+  noBtn.innerText = "Όχι 😢"; 
   noBtn.classList.remove("smooth-move");
   noBtn.style.position = "";
   noBtn.style.top = "";

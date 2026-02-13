@@ -6,7 +6,7 @@
     <title>Θέλεις να γίνεις ο Βαλεντίνος μου;</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
@@ -16,7 +16,8 @@
         
         <div class="buttons">
             <button id="yesBtn">Ναι 💕</button>
-            <button id="noBtn">Όχι 😢</button>
+            <div class="no-btn-wrapper"> <button id="noBtn">Όχι 😢</button>
+            </div>
         </div>
     </div>
 
@@ -36,6 +37,17 @@
         <button id="backBtn">Πίσω</button>
     </div>
 
-<script src="script.js"></script>
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-box">
+            <span class="popup-emoji">🥺</span>
+            <h2>Μισό λεπτό...</h2>
+            <p>Σοβαρά προσπαθείς ακόμα να πατήσεις "Όχι";</p>
+            <p>Η καρδιά μου δεν αντέχει τέτοια απόρριψη! <br> Ραγίζει! 💔</p>
+            <p>Σε παρακαλώ, γίνε η Βαλεντίνα μου! 🙏</p>
+            <button class="popup-close-btn" id="closePopupBtn">Εντάξει, θα το πατήσω...</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

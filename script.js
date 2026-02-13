@@ -8,10 +8,19 @@ const backBtn = document.getElementById("backBtn");
 const mainContainer = document.getElementById("mainContainer");
 const successMessage = document.getElementById("successMessage");
 
+// Popup Elements
+const popupOverlay = document.getElementById("popupOverlay");
+const closePopupBtn = document.getElementById("closePopupBtn");
+
 let hasMoved = false;
 let heartInterval;
 let textIndex = 0;
-let slideshowInterval; // Variable to control the slideshow
+let slideshowInterval; 
+
+// New variables for popup logic
+let hoverCount = 0; 
+let currentThreshold = 10; 
+let sadMode = false;
 
 const noTexts = [
   "Είσαι σίγουρη;",
@@ -29,14 +38,27 @@ const noTexts = [
 ];
 
 function moveButton() {
+  // Logic for Popup / Sad Mode
+  hoverCount++;
+  if (hoverCount === currentThreshold) {
+      popupOverlay.style.display = "flex";
+      sadMode = true; 
+      
+      // Burst of sadness immediately!
+      for(let i = 0; i < 15; i++) {
+          setTimeout(() => createFallingItem('sad'), i * 100);
+      }
+  }
+
+  // Text Logic
   noBtn.innerText = noTexts[textIndex];
   textIndex++;
 
   if (textIndex >= noTexts.length) {
-      // Loop the last 4 messages
       textIndex = noTexts.length - 4; 
   }
 
+  // Movement Logic
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
   const btnRect = noBtn.getBoundingClientRect();
@@ -71,6 +93,13 @@ function moveButton() {
   }
 }
 
+// Close Popup Logic
+closePopupBtn.addEventListener("click", () => {
+    popupOverlay.style.display = "none";
+    hoverCount = 0;
+    currentThreshold = 8; // Make it happen slightly faster next time
+});
+
 noBtn.addEventListener("mouseover", moveButton);
 noBtn.addEventListener("touchstart", (e) => {
   e.preventDefault(); 
@@ -83,26 +112,21 @@ function startSlideshow() {
   const slides = document.querySelectorAll('.slide-img');
   let slideIndex = 0;
 
-  // Clear any existing interval to prevent speed-ups
   if (slideshowInterval) clearInterval(slideshowInterval);
 
   slideshowInterval = setInterval(() => {
-      // Remove active class from current
       slides[slideIndex].classList.remove('active');
-      
-      // Calculate next index
       slideIndex = (slideIndex + 1) % slides.length;
-      
-      // Add active class to next
       slides[slideIndex].classList.add('active');
-  }, 2500); // Change image every 2.5 seconds
+  }, 2500); 
 }
 
 yesBtn.addEventListener("click", () => {
   mainContainer.style.display = "none";
   successMessage.style.display = "flex";
-  heartInterval = setInterval(createHeart, 300);
-  startSlideshow(); // Start photo animation
+  sadMode = false;
+  heartInterval = setInterval(() => createFallingItem('heart'), 300);
+  startSlideshow(); 
 });
 
 backBtn.addEventListener("click", () => {
@@ -110,10 +134,15 @@ backBtn.addEventListener("click", () => {
   mainContainer.style.display = "block";
   
   clearInterval(heartInterval);
-  clearInterval(slideshowInterval); // Stop photo animation
+  clearInterval(slideshowInterval); 
   
+  // Reset all states
   hasMoved = false;
   textIndex = 0;
+  hoverCount = 0;
+  currentThreshold = 10; 
+  sadMode = false;
+
   noBtn.innerText = "Όχι 😢"; 
   noBtn.classList.remove("smooth-move");
   noBtn.style.position = "";
@@ -121,15 +150,39 @@ backBtn.addEventListener("click", () => {
   noBtn.style.left = "";
 });
 
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.style.left = Math.random() * 100 + "vw";
+// Unified Falling Item Function (Hearts & Sad Faces)
+function createFallingItem(type) {
+  const item = document.createElement("div");
+  item.classList.add("falling-item");
+  
+  item.style.left = Math.random() * 100 + "vw";
   const size = Math.random() * 10 + 15 + "px"; 
-  heart.style.setProperty('--heart-size', size);
-  heart.style.animationDuration = Math.random() * 3 + 3 + "s";
-  document.body.appendChild(heart);
-  setTimeout(() => { heart.remove(); }, 6000);
+  item.style.setProperty('--heart-size', size);
+  item.style.animationDuration = Math.random() * 3 + 3 + "s";
+
+  if (type === 'heart') {
+      const heartShape = document.createElement("div");
+      heartShape.classList.add("heart-shape");
+      item.appendChild(heartShape);
+  } else if (type === 'sad') {
+      item.innerText = "😢";
+  }
+
+  document.body.appendChild(item);
+  setTimeout(() => { item.remove(); }, 6000);
 }
 
-setInterval(createHeart, 1000);
+// Background Animation Loop
+setInterval(() => {
+    if (sadMode) {
+        // If sad mode is on, mostly sad faces, some hearts
+        if (Math.random() > 0.6) {
+            createFallingItem('sad');
+        } else {
+            createFallingItem('heart');
+        }
+    } else {
+        // Normal mode: just hearts
+        createFallingItem('heart');
+    }
+}, 400); // Default speed
